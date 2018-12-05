@@ -1,0 +1,81 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+
+<header>
+    <% include ../partials/header %>
+</header>
+
+<main>
+        <div class="container">
+                <% if(server_details.token){ %>
+                    <h5>Docker Swarm Join Token is : <%= server_details.token %></h5>
+                  <% } else{ %>  
+                    <form method="POST" action="/jointoken">
+                        <div class="form-group">
+                          <label >Add a docker join token</label>
+                          <input type="text" name="token" class="form-control"  placeholder="Enter docker swarm join token">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                      </form>
+
+                 <% } %>
+                
+                <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th scope="col">Server Details</th>
+                            <th scope="col">Docker Information</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                                    <div class="card" style="width: 18rem;">
+                                            <div class="card-body">
+                                              <h5 class="card-title">Socket IP : <%= server_details.socket_ip %></h5>
+                                              <h6 class="card-subtitle mb-2 text-muted">Socket PORT : <%= server_details.socket_port %></h6>
+                                              
+                                            </div>
+                                          </div>
+                                          <button type="submit" onclick="location.href='/getdockernode'" class="btn btn-primary">Get Docker Nodes</button>
+                            </td>
+                            
+                            <td>
+
+                                    <% if(server_details.docker_nodes){ %>
+                                        <div class="card" style="width: 18rem;">
+                                                <div class="card-body">
+
+                                                        <% server_details.docker_nodes.forEach(function(docker_nodes){ %>
+                                                           <h6> Node ID : <%- docker_nodes.data.ID %> </h6> 
+                                                           <h6> Role : <%- docker_nodes.data.Spec.Role %> </h6> 
+                                                           <h6> Labels: <%- JSON.stringify(docker_nodes.data.Spec.Labels) %> </h6> 
+                                                           <h6> Hostname : <%- docker_nodes.data.Description.Hostname %> </h6> 
+                                                           <h6> Addr : <%- docker_nodes.data.Status.Addr %> </h6> 
+                                                           <h6> State : <%- docker_nodes.data.Status.State %> </h6> 
+                                                           <br>
+                                                          <% }); %>                                                                        
+                                                </div>
+                                              </div>
+                                      <% } else{ %>  
+                                <% } %>
+                                   
+                            </td>
+                          </tr>
+                
+                        </tbody>
+                      </table>
+</main>
+
+<footer>
+    <% include ../partials/footer %>
+</footer>
+
+</body>
+</html>
